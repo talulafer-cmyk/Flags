@@ -22,6 +22,7 @@ def main():
     class player(pygame.Rect):
         def __init__(self):
             pygame.Rect.__init__(self, 0, 0, 40, 80)
+
             solider_image = pygame.image.load('soldier.png')
             solider_image_resize = pygame.transform.scale(solider_image,
                                                           (40, 80))
@@ -37,9 +38,9 @@ def main():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if pygame.K_RIGHT or pygame.K_d:
-                    # soldier.move_right(position, field)
-                    player.y -= consts.CELL_SIZE
+                if pygame.K_UP or pygame.K_w:
+                    # soldier.move_right(position, field
+                    player.y -=  consts.CELL_SIZE
 
     # for event in pygame.event.get():
     #     if event.type == pygame.QUIT:
