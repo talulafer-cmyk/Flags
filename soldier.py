@@ -2,71 +2,86 @@ import pygame
 
 import consts
 import game_field
-def first_position(field):
-    for row in field:
-        for col in row:
-            if col == 'solider_body' or col == 'soldier_feet':
-                position = [[row, col],[row+1,col]]
-                break
-    return position
-def move_left(position, field):
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-        if position[0][1] >= 0:
-            field[position[0][0]][position[0][1]] = ' '
-            field[position[1][0]][position[1][1]] = ' '
-            position[0][1] -= 1
-            field[position[0][0]][position[0][1]] = 'solider_body'
-            position[1][1] -= 1
-            field[position[1][0]][position[1][1]] = 'solider_feet'
-            return position, field
-    return position, field
+# def first_position(field):
+#     for row in field:
+#         for col in row:
+#             if col == 'solider_body' or col == 'soldier_feet':
+#                 position = [[row, col],[row+1,col]]
+#                 break
+#     return position
 
-def move_right(position, field):
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-        if position[0][1] <= consts.WINDOW_WIDTH:
-            field[position[0][0]][position[0][1]] = ' '
-            field[position[1][0]][position[1][1]] = ' '
-            position[0][1] += 1
-            field[position[0][0]][position[0][1]] = 'solider_body'
-            position[1][1] += 1
-            field[position[1][0]][position[1][1]] = 'solider_feet'
-            return position, field
-    return position, field
 
-def move_up(position, field):
-    # keys = pygame.key.get_pressed()
-    # if keys[pygame.K_UP] or keys[pygame.K_w]:
-        if position[0][0] >= 0:
-            field[position[0][0]][position[0][1]] = ' '
-            field[position[1][0]][position[1][1]] = ' '
-            position[0][0] -= 1
-            field[position[0][0]][position[0][1]] = 'solider_body'
-            position[1][0] -= 1
-            field[position[1][0]][position[1][1]] = 'solider_feet'
-            return position, field
-        return position, field
+def move_left(field):
+    position_feet = [game_field.get_solider_feet_row(),game_field.get_solider_feet_col()]
+    position_body = [game_field.get_solider_row(),game_field.get_solider_col()]
+    if position_body[1] > 0:
+        for row in range (consts.SOLDIER_BODY_ROWS):
+            field[position_body[0]+row][position_body[1]-1] = 'solider_body'
+            field[position_body[0] + row][position_body[1] + 1] = ''
 
-def move_down(position, field):
-    # keys = pygame.key.get_pressed()
-    # if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-        if position[0][0] <= len(field) - 1:
-            field[position[0][0]][position[0][1]] = ' '
-            field[position[1][0]][position[1][1]] = ' '
-            position[0][0] += 1
-            field[position[0][0]][position[0][1]] = 'solider_body'
-            position[1][0] += 1
-            field[position[1][0]][position[1][1]] = 'solider_feet'
-            return position, field
-        return position, field
+        field[position_feet[0]][position_feet[1]-1] = 'solider_feet'
+        field[position_feet[0]][position_feet[1] + 1] = ''
+        return field
+    return field
 
-def solider():
-    class player(pygame.Rect):
-        def __init__(self):
-            pygame.Rect.__init__(self, 0, 0, 40, 80)
-            solider_image = pygame.image.load('soldier.png')
-            solider_image_resize = pygame.transform.scale(solider_image,
-                                                          (40, 80))
-            self.image = solider_image_resize
-    return player
+def move_right(field):
+    position_feet = [game_field.get_solider_feet_row(),
+                     game_field.get_solider_feet_col()]
+    position_body = [game_field.get_solider_row(),
+                     game_field.get_solider_col()]
+    if position_body[1]+1 < consts.BOARD_COLS-1:
+        for row in range(consts.SOLDIER_BODY_ROWS):
+            field[position_body[0] + row][position_body[1] + 1] = 'solider_body'
+            field[position_body[0] + row][position_body[1] - 1] = ''
+
+        field[position_feet[0]][position_feet[1] - 1] = 'solider_feet'
+        field[position_feet[0]][position_feet[1] + 1] = ''
+        return field
+    return field
+
+def move_up( field):
+    position_feet = [game_field.get_solider_feet_row(), game_field.get_solider_feet_col()]
+    position_body = [game_field.get_solider_row(), game_field.get_solider_col()]
+    if position_body[0] < consts.BOARD_ROWS-1:
+        field[position_feet[0]][position_feet[1]] = ' '
+        field[position_feet[0]][position_feet[1]+1] = ' '
+        position_body[0] -= 1
+        position_feet[0] -= 1
+        field[position_body[0]][position_body[1]] = 'solider_body'
+        field[position_feet[0]][position_feet[1]] = 'solider_feet'
+        field[position_body[0]][position_body[1]+1] = 'solider_body'
+        field[position_feet[0]][position_feet[1]+1] = 'solider_feet'
+
+        return field
+    return field
+
+def move_down(field):
+    position_feet = [game_field.get_solider_feet_row(),game_field.get_solider_feet_col()]
+    position_body = [game_field.get_solider_row(),game_field.get_solider_col()]
+    if position_feet[0] < consts.BOARD_ROWS:
+        field[position_feet[0]][position_feet[1]] = 'solider_body'
+        field[position_body[0]][position_body[1]] = ' '
+        field[position_feet[0]][position_feet[1]+1] = 'solider_body'
+        field[position_body[0]][position_body[1]+1] = ' '
+        position_body[0] += 1
+        position_feet[0] += 1
+        field[position_feet[0]][position_feet[1]] = 'solider_feet'
+        field[position_feet[0]][position_feet[1]+1] = 'solider_feet'
+
+        #position_body[0] += 1
+        #position_feet[0] += 1
+        #field[position_body[0]][position_body[1] + 1] = 'solider_body'
+        #field[position_feet[0]][position_feet[1] + 1] = 'solider_feet'
+       #
+       #
+       #
+       #
+       # field[position_feet[0]][position_feet[1]] = 'solider_body'
+       # field[position_feet[0]][position_feet[1] + 1] ='solider_body'
+       # field[position_feet[0]+1][position_feet[1]] = 'solider_feet'
+       # field[position_feet[0] + 1][position_feet[1]+1] = 'solider_feet'
+
+
+    return  field
+
+

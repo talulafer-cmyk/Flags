@@ -5,10 +5,18 @@ from sys import exit
 import consts
 
 pygame.init()
-# window = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
-# pygame.display.set_caption("the flag")
+window = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
+pygame.display.set_caption("the flag")
 clock = pygame.time.Clock()
-player = pygame.Rect(0,0,40,80)
+player_image = pygame.image.load('soldier.png')
+player_image = pygame.transform.scale(player_image, (40, 80))
+
+class Player(pygame.Rect):
+    def __init__(self):
+        pygame.Rect.__init__(self,0,0,40,80)
+        self.image = player_image
+
+player = Player()
 
 def create_screen():
     window = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
@@ -25,9 +33,9 @@ def create_screen():
 
 
 def draw():
-    # window.fill('lightgreen')
+    window.fill('lightgreen')
     # win = bushes()
-    pygame.draw.rect(window, (255,0,0), player)
+    window.blit(player_image, player)
 
 # def main():
 while True:

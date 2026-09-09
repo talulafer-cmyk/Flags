@@ -1,12 +1,37 @@
 import sys
 import random
+import time
+
 import pygame
 from sys import exit
 import consts
 import soldier
 import game_field
+import screen
 
 
+# state = {
+#     "is_window_open": True,
+#     "state": consts.RUNNING_STATE,
+# }
+
+def is_win():
+    # get solider pos:
+    solider_row=game_field.get_solider_row()
+    solider_col=game_field.get_solider_col()
+    if game_field.is_in_flag_location(solider_row,solider_col):
+       screen.draw_win_message()
+       return True
+    return False
+def is_lose():
+
+    #get solider pos:
+    solider_row=game_field.get_solider_feet_row()
+    solider_col=game_field.get_solider_feet_col()
+    if game_field.is_in_bomb_location(solider_row,solider_col):
+        screen.draw_lose_message()
+        return True
+    return False
 
 bush_indexes=[]
 item=()
@@ -17,16 +42,12 @@ for i in range(20):
    bush_indexes.append(item)
 
 def create_screen():
-    window = pygame.display.set_mode((consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
-    pygame.display.set_caption("THE FLAG GAME")
-    window.fill('lightgreen')
-    bush = pygame.image.load('grass.png')
-    resize_bush = pygame.transform.scale(bush, (60, 60))
-    for i in range (20):
-        ran_x = random.randrange(consts.WINDOW_WIDTH)
-        ran_y = random.randrange(consts.WINDOW_HEIGHT)
-        window.blit(resize_bush, (ran_x, ran_y))
-    pygame.display.flip()
+    window = pygame.display.set_mode(
+            (consts.WINDOW_WIDTH, consts.WINDOW_HEIGHT))
+    pygame.display.set_caption("the flag")
+    clock = pygame.time.Clock()
+    player_image = pygame.image.load('soldier.png')
+    player_image = pygame.transform.scale(player_image, (40, 80))
     return window
 
 
@@ -57,8 +78,9 @@ def main():
 
     player = Player()
     game_field.create_field()
+    run = True
 
-    while True:
+    while run :
 
         bush = pygame.image.load('grass.png')
         resize_bush = pygame.transform.scale(bush, (60, 60))
@@ -91,6 +113,13 @@ def main():
                     if player.x > consts.CELL_SIZE:
                         player.x -= consts.CELL_SIZE
                         soldier.move_left(game_field.field)
+            if is_lose:
+                time.sleep(2.5)
+                run = False
+
+            if is_win:
+                time.sleep(2.5)
+                run = False
 
         draw(window,player_image, player)
         pygame.display.update()
