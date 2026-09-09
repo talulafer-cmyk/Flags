@@ -31,11 +31,13 @@ def move_right(field):
                      game_field.get_solider_col()]
     if position_body[1]+1 < consts.BOARD_COLS-1:
         for row in range(consts.SOLDIER_BODY_ROWS):
-            field[position_body[0] + row][position_body[1] + 1] = 'solider_body'
-            field[position_body[0] + row][position_body[1] - 1] = ''
+            field[position_body[0] + row][position_body[1] + 2] = 'solider_body'
+            field[position_body[0] + row][position_body[1]] = ''
 
-        field[position_feet[0]][position_feet[1] - 1] = 'solider_feet'
-        field[position_feet[0]][position_feet[1] + 1] = ''
+
+        field[position_feet[0]][position_feet[1] ] = ''
+        field[position_feet[0]][position_feet[1] + 2] = 'solider_feet'
+
         return field
     return field
 
